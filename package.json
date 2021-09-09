@@ -1,7 +1,7 @@
 {
-  "name": "chrome-react-seo-extension",
-  "version": "0.1.0",
-  "private": true,
+  "name": "uvic-ical",
+  "version": "1.0.0",
+  "private": false,
   "dependencies": {
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",
@@ -39,5 +39,14 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  }
+  },
+  "license": "MIT",
+  "author": {
+    "name": "Logan Kuzyk",
+    "email": "logan@kuzyk.net",
+    "url": "https://logankuzyk.xyz"
+  },
+  "contributors": [
+    "Maxwell A. Borden"
+  ]
 }
