@@ -12,6 +12,13 @@
   },
   "action": {
     "default_popup": "index.html",
-    "default_title": "Open the popup"
-  }
+    "default_title": "UVic iCal"
+  },
+  "permissions": ["tabs", "activeTab"],
+  "content_scripts": [
+    {
+      "matches": ["*://*.uvic.ca/*"],
+      "js": ["./static/js/content.js"]
+    }
+  ]
 }
