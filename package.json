@@ -1,7 +1,7 @@
 {
   "name": "uvic-ical",
   "version": "1.0.0",
-  "private": false,
+  "private": true,
   "dependencies": {
     "@craco/craco": "^6.2.0",
     "@types/chrome": "^0.0.157",
