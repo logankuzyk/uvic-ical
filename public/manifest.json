@@ -18,7 +18,7 @@
   "content_scripts": [
     {
       "matches": ["*://*.uvic.ca/*"],
-      "js": ["./static/js/content.js"]
+      "js": ["./static/content.js"]
     }
   ]
 }
