@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "dependencies": {
+    "@rollup/plugin-typescript": "^8.2.5",
     "@types/chrome": "^0.0.157",
     "@types/node": "^12.0.0",
     "@types/react": "^17.0.0",
