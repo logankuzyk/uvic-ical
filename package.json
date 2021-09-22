@@ -3,20 +3,28 @@
   "version": "1.0.0",
   "private": true,
   "dependencies": {
+    "@rollup/plugin-commonjs": "^20.0.0",
+    "@rollup/plugin-node-resolve": "^13.0.5",
+    "@rollup/plugin-replace": "^3.0.0",
     "@rollup/plugin-typescript": "^8.2.5",
     "@types/chrome": "^0.0.157",
     "@types/node": "^12.0.0",
     "@types/react": "^17.0.0",
     "@types/react-dom": "^17.0.0",
     "ics": "^2.31.0",
+    "postcss": "^8.3.7",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "rollup": "^2.56.3",
+    "rollup-plugin-copy": "^3.4.0",
+    "rollup-plugin-postcss": "^4.0.1",
+    "rollup-plugin-terser": "^7.0.2",
+    "tslib": "^2.3.1",
     "typescript": "^4.1.2",
     "web-vitals": "^1.0.1"
   },
   "scripts": {
-    "build": "INLINE_RUNTIME_CHUNK=false  build"
+    "build": "INLINE_RUNTIME_CHUNK=false rollup -c"
   },
   "browserslist": {
     "production": [
