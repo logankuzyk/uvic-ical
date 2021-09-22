@@ -32,6 +32,7 @@ export default defineConfig([
       commonjs(),
       replace({
         "process.env.NODE_ENV": JSON.stringify("production"),
+        preventAssignment: true,
       }),
     ],
     input: "src/index.tsx",
