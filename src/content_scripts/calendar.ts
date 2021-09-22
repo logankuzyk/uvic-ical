@@ -7,7 +7,7 @@
 // The app won't build if it's a js file because it can't tell that chrome is defined.
 // chrome is defined globally in @types/chrome, it gets injected by the browser.
 
-import ics from "ics";
+import iCal from "ical-generator";
 
 function getSemester(timetableDocument: Document) {
   //@ts-ignore
@@ -17,7 +17,9 @@ function getSemester(timetableDocument: Document) {
 }
 
 function getClassSections(timetableDocument: Document) {
-  return timetableDocument.querySelectorAll("table.datadisplaytable");
+  return timetableDocument.querySelectorAll(
+    "div#P_CrseSchdDetl > table.datadisplaytable"
+  );
 }
 
 //@ts-ignore
@@ -58,9 +60,6 @@ function dayIntToRRULE(dayInt) {
 const MS_PER_DAY = 86400000;
 
 function getIcs() {
-  console.log(document.getElementsByName("SSBFrame")[0]);
-  //@ts-ignore
-  console.log(document.getElementsByName("SSBFrame")[0].contentDocument);
   //@ts-ignore
   const { contentDocument } = document.getElementsByName("SSBFrame")[0];
   const calendarTitle = "UVic " + getSemester(contentDocument);
@@ -77,6 +76,7 @@ function getIcs() {
         //meetingTime = [Type, Time, Days, Where, Date Range, Schedule Type, Instructors]
 
         const floating = true;
+        //@ts-ignore
         const summary = getClassSectionTitle(classSection);
         const location = meetingTime.cells[3].textContent;
 
@@ -131,35 +131,28 @@ function getIcs() {
         return { start, end, summary, location, floating, repeating };
       })
     );
+
+    let calendar = iCal({
+      name: calendarTitle,
+      prodId: "//m20n.com//UVICalendar//EN",
+      timezone: "America/Vancouver",
+      events: classes,
+    });
+
+    let exportLink = document.createElement("a");
+    exportLink.textContent = "export";
+    exportLink.href = `data:text/calendar;charset=utf-8,${encodeURIComponent(
+      calendar.toString()
+    )}`;
+    exportLink.download = `${calendarTitle}.ics`;
+    exportLink.id = "uvical_export";
+
+    return exportLink;
   });
-
-  //   let calendar = iCal({
-  //     name: calendarTitle,
-  //     prodId: "//m20n.com//UVICalendar//EN",
-  //     timezone: "America/Vancouver",
-  //     events: classese,
-  //   });
-
-  //@ts-ignore
-  ics.createEvents(classes, console.log);
-
-  return {
-    href: "",
-    download: "",
-    id: "uvic-ical",
-  };
-
-  //   let exportLink = document.createElement("a");
-  //   exportLink.textContent = "export";
-  //   exportLink.href = `data:text/calendar;charset=utf-8,${encodeURIComponent(
-  //     calendar.toString()
-  //   )}`;
-  //   exportLink.download = `${calendarTitle}.ics`;
-  //   exportLink.id = "uvical_export";
-
-  //   insertExportLink(exportLink);
 }
 
 chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
-  getIcs();
+  const exportLink = JSON.stringify(getIcs());
+
+  sendResponse(exportLink);
 });
