@@ -3,26 +3,20 @@
 // Adapted in 2021 by Logan Kuzyk for
 // https://github.com/logankuzyk/uvic-ical
 
-// Although the features of TypeScript are not used in this file, it must actually be a TypeScript file.
-// The app won't build if it's a js file because it can't tell that chrome is defined.
-// chrome is defined globally in @types/chrome, it gets injected by the browser.
-
 import iCal from "ical-generator";
 
-function getSemester(timetableDocument: Document) {
-  //@ts-ignore
+function getSemester(timetableDocument) {
   return timetableDocument
     .querySelector("div.staticheaders")
     .childNodes[2].textContent.split(": ")[1];
 }
 
-function getClassSections(timetableDocument: Document) {
+function getClassSections(timetableDocument) {
   return timetableDocument.querySelectorAll(
     "div#P_CrseSchdDetl > table.datadisplaytable"
   );
 }
 
-//@ts-ignore
 function getScheduledMeetingTimes(classSection) {
   let scheduledMeetingTimesTable = classSection.querySelector(
     "table.datadisplaytable.tablesorter > tbody > tbody"
@@ -30,14 +24,11 @@ function getScheduledMeetingTimes(classSection) {
   return [...scheduledMeetingTimesTable.rows];
 }
 
-//@ts-ignore
 function getClassSectionTitle(classSection) {
   return classSection.querySelector("caption").textContent;
 }
 
-//@ts-ignore
 function to24(time) {
-  //@ts-ignore
   let [hours, minutes] = time.split(":").map((el) => parseInt(el, 10));
   if (time.endsWith("pm") && hours !== 12) {
     hours += 12;
@@ -45,13 +36,11 @@ function to24(time) {
   return hours.toString() + ":" + (minutes === 0 ? "00" : minutes.toString());
 }
 
-//@ts-ignore
 function dayCharToInt(dayChar) {
   const days = ["su", "m", "t", "w", "r", "f", "sa"];
   return days.indexOf(dayChar.toLowerCase());
 }
 
-//@ts-ignore
 function dayIntToRRULE(dayInt) {
   const days = ["su", "mo", "tu", "we", "th", "fr", "sa"];
   return days[dayInt];
@@ -60,32 +49,25 @@ function dayIntToRRULE(dayInt) {
 const MS_PER_DAY = 86400000;
 
 function getIcs() {
-  //@ts-ignore
   const { contentDocument } = document.getElementsByName("SSBFrame")[0];
   const calendarTitle = "UVic " + getSemester(contentDocument);
   const classSections = getClassSections(contentDocument);
 
-  //@ts-ignore
   let classes = [];
-  //@ts-ignore
   classSections.forEach((classSection) => {
     const scheduledMeetingTimes = getScheduledMeetingTimes(classSection);
-    //@ts-ignore
     classes = classes.concat(
       scheduledMeetingTimes.map((meetingTime) => {
         //meetingTime = [Type, Time, Days, Where, Date Range, Schedule Type, Instructors]
 
         const floating = true;
-        //@ts-ignore
         const summary = getClassSectionTitle(classSection);
         const location = meetingTime.cells[3].textContent;
 
         const [startDate, endDate] = meetingTime.cells[4].textContent
           .split("-")
-          //@ts-ignore
           .map((el) => el.trim());
         const firstDayInRange = new Date(startDate).getDay();
-        //@ts-ignore
         let firstOccurranceOrder = [];
 
         for (let i = 0; i < 7; i++) {
@@ -99,14 +81,12 @@ function getIcs() {
         // mwr => [1,3,4]
 
         const firstOccurranceOffset =
-          //@ts-ignore
           Math.min(...days.map((day) => firstOccurranceOrder.indexOf(day))) *
           MS_PER_DAY;
         // Find the first day of a class to create the inital calendar event. If semester starts on a tues and class is every monday wednesday and thurs, find that first wednesday.
 
         let [startTime, endTime] = meetingTime.cells[1].textContent
           .split("-")
-          //@ts-ignore
           .map((el) => to24(el.trim())); // Time of day class occurs
         startTime = new Date(startDate + " " + startTime); //DateTime of First day in range at time of class start
         endTime = new Date(startDate + " " + endTime);
@@ -153,6 +133,7 @@ function getIcs() {
 
 chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
   const exportLink = JSON.stringify(getIcs());
+  alert(exportLink);
 
   sendResponse(exportLink);
 });
