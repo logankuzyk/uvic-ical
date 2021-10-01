@@ -35,6 +35,10 @@ export default defineConfig([
       nodeResolve({ browser: true }),
       postcss({ extensions: [".css"] }),
       commonjs(),
+      replace({
+        "process.env.NODE_ENV": JSON.stringify("production"),
+        preventAssignment: true,
+      }),
     ],
     input: "src/index.tsx",
     output: {
